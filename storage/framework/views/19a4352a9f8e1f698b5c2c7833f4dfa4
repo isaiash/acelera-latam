@@ -1,0 +1,18 @@
+<?php $__env->startSection('content'); ?>
+
+
+<div id="contenido">
+
+<a href="logout" class="btn btn-danger" style="color: #fff">​Salir</a>
+
+
+</div>	
+
+
+
+
+
+<?php $__env->stopSection(); ?>
+
+
+<?php echo $__env->make('cliente.estructura', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
