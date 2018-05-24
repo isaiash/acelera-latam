@@ -16,6 +16,8 @@ Route::get('/', [
 	'uses' => 'HomeController@index'
 ]);
 
+Route::get('estadoempresa',function(){return view("cliente.estadoempresa");});
+
 Route::get('inicio', [
 	'as' => 'inicio',
 	'uses' => 'HomeController@index'
