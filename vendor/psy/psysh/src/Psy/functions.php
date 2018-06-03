@@ -1,11 +1,22 @@
 <?php
 
+/*
+ * This file is part of Psy Shell.
+ *
+ * (c) 2012-2017 Justin Hileman
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Psy;
 
+use Psy\VersionUpdater\GitHubChecker;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
+use XdgBaseDir\Xdg;
 
 if (!function_exists('Psy\sh')) {
     /**
@@ -17,27 +28,135 @@ if (!function_exists('Psy\sh')) {
      */
     function sh()
     {
-        return 'extract(\Psy\Shell::debug(get_defined_vars(), isset($this) ? $this : null));';
+        return 'extract(\Psy\debug(get_defined_vars(), isset($this) ? $this : null));';
+    }
+}
+
+if (!function_exists('Psy\debug')) {
+    /**
+     * Invoke a Psy Shell from the current context.
+     *
+     * For example:
+     *
+     *     foreach ($items as $item) {
+     *         \Psy\debug(get_defined_vars());
+     *     }
+     *
+     * If you would like your shell interaction to affect the state of the
+     * current context, you can extract() the values returned from this call:
+     *
+     *     foreach ($items as $item) {
+     *         extract(\Psy\debug(get_defined_vars()));
+     *         var_dump($item); // will be whatever you set $item to in Psy Shell
+     *     }
+     *
+     * Optionally, supply an object as the `$boundObject` parameter. This
+     * determines the value `$this` will have in the shell, and sets up class
+     * scope so that private and protected members are accessible:
+     *
+     *     class Foo {
+     *         function bar() {
+     *             \Psy\debug(get_defined_vars(), $this);
+     *         }
+     *     }
+     *
+     * This only really works in PHP 5.4+ and HHVM 3.5+, so upgrade already.
+     *
+     * @param array  $vars        Scope variables from the calling context (default: array())
+     * @param object $boundObject Bound object ($this) value for the shell
+     *
+     * @return array Scope variables from the debugger session
+     */
+    function debug(array $vars = array(), $boundObject = null)
+    {
+        echo PHP_EOL;
+
+        $sh = new Shell();
+        $sh->setScopeVariables($vars);
+
+        // Show a couple of lines of call context for the debug session.
+        //
+        // @todo come up with a better way of doing this which doesn't involve injecting input :-P
+        if ($sh->has('whereami')) {
+            $sh->addInput('whereami -n2', true);
+        }
+
+        if ($boundObject !== null) {
+            $sh->setBoundObject($boundObject);
+        }
+
+        $sh->run();
+
+        return $sh->getScopeVariables(false);
     }
 }
 
 if (!function_exists('Psy\info')) {
-    function info()
+    /**
+     * Get a bunch of debugging info about the current PsySH environment and
+     * configuration.
+     *
+     * If a Configuration param is passed, that configuration is stored and
+     * used for the current shell session, and no debugging info is returned.
+     *
+     * @param Configuration|null $config
+     *
+     * @return array|null
+     */
+    function info(Configuration $config = null)
     {
-        $config = new Configuration();
+        static $lastConfig;
+        if ($config !== null) {
+            $lastConfig = $config;
+
+            return;
+        }
+
+        $xdg = new Xdg();
+        $home = rtrim(str_replace('\\', '/', $xdg->getHomeDir()), '/');
+        $homePattern = '#^' . preg_quote($home, '#') . '/#';
+
+        $prettyPath = function ($path) use ($homePattern) {
+            if (is_string($path)) {
+                return preg_replace($homePattern, '~/', $path);
+            } else {
+                return $path;
+            }
+        };
+
+        $config = $lastConfig ?: new Configuration();
 
         $core = array(
-            'PsySH version'      => Shell::VERSION,
-            'PHP version'        => PHP_VERSION,
-            'default includes'   => $config->getDefaultIncludes(),
-            'require semicolons' => $config->requireSemicolons(),
-            'config file'        => array(
-                'default config file' => $config->getConfigFile(),
-                'PSYSH_CONFIG env'    => getenv('PSYSH_CONFIG'),
+            'PsySH version'       => Shell::VERSION,
+            'PHP version'         => PHP_VERSION,
+            'default includes'    => $config->getDefaultIncludes(),
+            'require semicolons'  => $config->requireSemicolons(),
+            'error logging level' => $config->errorLoggingLevel(),
+            'config file'         => array(
+                'default config file' => $prettyPath($config->getConfigFile()),
+                'local config file'   => $prettyPath($config->getLocalConfigFile()),
+                'PSYSH_CONFIG env'    => $prettyPath(getenv('PSYSH_CONFIG')),
             ),
             // 'config dir'  => $config->getConfigDir(),
             // 'data dir'    => $config->getDataDir(),
             // 'runtime dir' => $config->getRuntimeDir(),
+        );
+
+        // Use an explicit, fresh update check here, rather than relying on whatever is in $config.
+        $checker = new GitHubChecker();
+        $updateAvailable = null;
+        $latest = null;
+        try {
+            $updateAvailable = !$checker->isLatest();
+            $latest = $checker->getLatest();
+        } catch (\Exception $e) {
+        }
+
+        $updates = array(
+            'update available'       => $updateAvailable,
+            'latest release version' => $latest,
+            'update check interval'  => $config->getUpdateCheck(),
+            'update cache file'      => $prettyPath($config->getUpdateCheckCacheFile()),
         );
 
         if ($config->hasReadline()) {
@@ -47,10 +166,13 @@ if (!function_exists('Psy\info')) {
                 'readline available' => true,
                 'readline enabled'   => $config->useReadline(),
                 'readline service'   => get_class($config->getReadline()),
-                'readline library'   => $info['library_version'],
             );
 
-            if ($info['readline_name'] !== '') {
+            if (isset($info['library_version'])) {
+                $readline['readline library'] = $info['library_version'];
+            }
+
+            if (isset($info['readline_name']) && $info['readline_name'] !== '') {
                 $readline['readline name'] = $info['readline_name'];
             }
         } else {
@@ -64,14 +186,19 @@ if (!function_exists('Psy\info')) {
             'posix available' => function_exists('posix_getpid'),
         );
 
+        $disabledFuncs = array_map('trim', explode(',', ini_get('disable_functions')));
+        if (in_array('pcntl_signal', $disabledFuncs) || in_array('pcntl_fork', $disabledFuncs)) {
+            $pcntl['pcntl disabled'] = true;
+        }
+
         $history = array(
-            'history file'     => $config->getHistoryFile(),
+            'history file'     => $prettyPath($config->getHistoryFile()),
             'history size'     => $config->getHistorySize(),
             'erase duplicates' => $config->getEraseDuplicates(),
         );
 
         $docs = array(
-            'manual db file'   => $config->getManualDbFile(),
+            'manual db file'   => $prettyPath($config->getManualDbFile()),
             'sqlite available' => true,
         );
 
@@ -106,9 +233,10 @@ if (!function_exists('Psy\info')) {
         $autocomplete = array(
             'tab completion enabled' => $config->getTabCompletion(),
             'custom matchers'        => array_map('get_class', $config->getTabCompletionMatchers()),
+            'bracketed paste'        => $config->useBracketedPaste(),
         );
 
-        return array_merge($core, compact('pcntl', 'readline', 'history', 'docs', 'autocomplete'));
+        return array_merge($core, compact('updates', 'pcntl', 'readline', 'history', 'docs', 'autocomplete'));
     }
 }
 
@@ -126,10 +254,12 @@ if (!function_exists('Psy\bin')) {
             $input = new ArgvInput();
             try {
                 $input->bind(new InputDefinition(array(
-                    new InputOption('help',    'h',  InputOption::VALUE_NONE),
-                    new InputOption('config',  'c',  InputOption::VALUE_REQUIRED),
-                    new InputOption('version', 'v',  InputOption::VALUE_NONE),
-                    new InputOption('cwd',     null, InputOption::VALUE_REQUIRED),
+                    new InputOption('help',     'h',  InputOption::VALUE_NONE),
+                    new InputOption('config',   'c',  InputOption::VALUE_REQUIRED),
+                    new InputOption('version',  'v',  InputOption::VALUE_NONE),
+                    new InputOption('cwd',      null, InputOption::VALUE_REQUIRED),
+                    new InputOption('color',    null, InputOption::VALUE_NONE),
+                    new InputOption('no-color', null, InputOption::VALUE_NONE),
 
                     new InputArgument('include', InputArgument::IS_ARRAY),
                 )));
@@ -142,6 +272,15 @@ if (!function_exists('Psy\bin')) {
             // Handle --config
             if ($configFile = $input->getOption('config')) {
                 $config['configFile'] = $configFile;
+            }
+
+            // Handle --color and --no-color
+            if ($input->getOption('color') && $input->getOption('no-color')) {
+                $usageException = new \RuntimeException('Using both "--color" and "--no-color" options is invalid.');
+            } elseif ($input->getOption('color')) {
+                $config['colorMode'] = Configuration::COLOR_MODE_FORCED;
+            } elseif ($input->getOption('no-color')) {
+                $config['colorMode'] = Configuration::COLOR_MODE_DISABLED;
             }
 
             $shell = new Shell(new Configuration($config));
@@ -165,6 +304,8 @@ Options:
   --config   -c Use an alternate PsySH config file location.
   --cwd         Use an alternate working directory.
   --version  -v Display the PsySH version.
+  --color       Force colors in output.
+  --no-color    Disable colors in output.
 
 EOL;
                 exit($usageException === null ? 0 : 1);
@@ -185,7 +326,7 @@ EOL;
             } catch (Exception $e) {
                 echo $e->getMessage() . PHP_EOL;
 
-                // TODO: this triggers the "exited unexpectedly" logic in the
+                // @todo this triggers the "exited unexpectedly" logic in the
                 // ForkingLoop, so we can't exit(1) after starting the shell...
                 // fix this :)
 

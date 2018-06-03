@@ -16,29 +16,21 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
- * Adds configured formats to each request
+ * Adds configured formats to each request.
  *
  * @author Gildas Quemener <gildas.quemener@gmail.com>
  */
 class AddRequestFormatsListener implements EventSubscriberInterface
 {
-    /**
-     * @var array
-     */
     protected $formats;
 
-    /**
-     * @param array $formats
-     */
     public function __construct(array $formats)
     {
         $this->formats = $formats;
     }
 
     /**
-     * Adds request formats
-     *
-     * @param GetResponseEvent $event
+     * Adds request formats.
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
@@ -52,6 +44,6 @@ class AddRequestFormatsListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(KernelEvents::REQUEST => 'onKernelRequest');
+        return array(KernelEvents::REQUEST => array('onKernelRequest', 1));
     }
 }

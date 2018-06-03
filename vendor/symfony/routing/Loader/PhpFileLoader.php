@@ -13,6 +13,7 @@ namespace Symfony\Component\Routing\Loader;
 
 use Symfony\Component\Config\Loader\FileLoader;
 use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -21,8 +22,6 @@ use Symfony\Component\Routing\RouteCollection;
  * The file must return a RouteCollection instance.
  *
  * @author Fabien Potencier <fabien@symfony.com>
- *
- * @api
  */
 class PhpFileLoader extends FileLoader
 {
@@ -33,15 +32,27 @@ class PhpFileLoader extends FileLoader
      * @param string|null $type The resource type
      *
      * @return RouteCollection A RouteCollection instance
-     *
-     * @api
      */
     public function load($file, $type = null)
     {
         $path = $this->locator->locate($file);
         $this->setCurrentDir(dirname($path));
 
-        $collection = self::includeFile($path, $this);
+        // the closure forbids access to the private scope in the included file
+        $loader = $this;
+        $load = \Closure::bind(function ($file) use ($loader) {
+            return include $file;
+        }, null, ProtectedPhpFileLoader::class);
+
+        $result = $load($path);
+
+        if ($result instanceof \Closure) {
+            $collection = new RouteCollection();
+            $result(new RoutingConfigurator($collection, $this, $path, $file), $this);
+        } else {
+            $collection = $result;
+        }
+
         $collection->addResource(new FileResource($path));
 
         return $collection;
@@ -49,24 +60,16 @@ class PhpFileLoader extends FileLoader
 
     /**
      * {@inheritdoc}
-     *
-     * @api
      */
     public function supports($resource, $type = null)
     {
         return is_string($resource) && 'php' === pathinfo($resource, PATHINFO_EXTENSION) && (!$type || 'php' === $type);
     }
+}
 
-    /**
-     * Safe include. Used for scope isolation.
-     *
-     * @param string        $file   File to include
-     * @param PhpFileLoader $loader the loader variable is exposed to the included file below
-     *
-     * @return RouteCollection
-     */
-    private static function includeFile($file, PhpFileLoader $loader)
-    {
-        return include $file;
-    }
+/**
+ * @internal
+ */
+final class ProtectedPhpFileLoader extends PhpFileLoader
+{
 }

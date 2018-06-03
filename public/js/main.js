@@ -52,7 +52,7 @@ $("#contenido_principal").html($("#cargador_empresa").html());
    
    
    
-        $("#"+divresul+"").html($("#cargador_empresa").html());
+      //  $("#"+divresul+"").html($("#cargador_empresa").html());
 
               $.ajax({
 

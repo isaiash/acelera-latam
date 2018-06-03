@@ -20,11 +20,11 @@
 
           <div class="form-group has-feedback">
 
-                <input type="email" class="form-control" name="email" >
-            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                <input type="rut" class="form-control" name="rut" placeholder="Rut completo sin puntos ni guion">
+            <span class="fa fa-globe form-control-feedback"></span>
           </div>
           <div class="form-group has-feedback">
-            <input type="password" class="form-control" name="password">
+            <input type="password" class="form-control" name="password" placeholder="Contraseña">
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>
          

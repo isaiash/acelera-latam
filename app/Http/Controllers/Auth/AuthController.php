@@ -10,6 +10,10 @@ use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 use Session;
+use AuthenticatesUsers;
+use RegistersUsers;
+use ResetsPasswords;
+
 
 class AuthController extends Controller
 {
@@ -24,7 +28,7 @@ class AuthController extends Controller
     |
     */
 
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+
 
 
     /**
@@ -61,13 +65,13 @@ class AuthController extends Controller
         public function postLogin(Request $request)
    {
     $this->validate($request, [
-        'email' => 'required',
+        'rut' => 'required',
         'password' => 'required',
     ]);
 
 
 
-    $credentials = $request->only('email', 'password');
+    $credentials = $request->only('rut', 'password');
 
     if ($this->auth->attempt($credentials, $request->has('remember')))
     {
@@ -98,18 +102,18 @@ class AuthController extends Controller
 
    {
 $this->validate($request, [
-        'nombre' => 'required',
-        'email' => 'required',
+        'name' => 'required',
+        'rut' => 'required',
         'password' => 'required',
     ]);
 
 
   $data=$request->all();
         $usuario= new User;
-         $usuario->nombre  = $data["nombre"];
-        $usuario->apellidos  = $data["apellidos"];
-        $usuario->email = $data["email"];
+        $usuario->rut  = $data["rut"];
+        $usuario->name  = $data["name"];
         $usuario->numero_telefono  = $data["numero_telefono"];
+        $usuario->email = $data["email"];      
         $usuario->password=bcrypt($data["password"]);
       
         

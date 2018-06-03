@@ -35,17 +35,21 @@
       <form action="register" method="post">
       <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">   
           
+
+        
           <div class="form-group has-feedback">
-            <label>Nombre</label>
-            <input type="text" class="form-control" name="nombre" >
-            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+            <label>Rut empresarial</label>
+            <input type="text" class="form-control" name="rut" >
+            <span class=" fa fa-globe form-control-feedback"></span>
+          </div>
+        
+
+          <div class="form-group has-feedback">
+            <label>Nombre de la empresa</label>
+            <input type="text" class="form-control" name="name" >
+            <span class="fa fa-group form-control-feedback"></span>
           </div>
 
- <div class="form-group has-feedback">
-            <label>Apellidos</label>
-            <input type="text" class="form-control" name="apellidos" >
-            <span class="glyphicon glyphicon-user form-control-feedback"></span>
-          </div>
 
           <div class="form-group has-feedback">
             <label>Numero de telefono</label>
@@ -56,13 +60,13 @@
 
 
            <div class="form-group has-feedback">
-             <label>email</label>
+             <label>E-mail</label>
             <input type="email" class="form-control" name="email" >
             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
           </div>
 
           <div class="form-group has-feedback">
-                <label>password</label>
+                <label>Contraseña</label>
             <input type="password" class="form-control" name="password" >
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>

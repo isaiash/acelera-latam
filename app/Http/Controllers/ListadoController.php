@@ -30,18 +30,10 @@ class ListadoController extends Controller {
 	//presenta el formulario para nuevo usuario
 		public function listado_usuarios()
    {
-
-   	
-       
      
-        $usuarios= User::paginate(25);
-        
+        $usuarios = User::paginate(10);
         return view('listados.listado_usuarios')->with("usuarios", $usuarios );
         
-    
-
-
-       
      
 	}
 

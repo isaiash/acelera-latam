@@ -39,7 +39,7 @@ class EncryptCookies
     /**
      * Disable encryption for the given cookie name(s).
      *
-     * @param string|array $cookieName
+     * @param  string|array  $cookieName
      * @return void
      */
     public function disableFor($cookieName)
@@ -106,7 +106,9 @@ class EncryptCookies
         $decrypted = [];
 
         foreach ($cookie as $key => $value) {
-            $decrypted[$key] = $this->encrypter->decrypt($value);
+            if (is_string($value)) {
+                $decrypted[$key] = $this->encrypter->decrypt($value);
+            }
         }
 
         return $decrypted;
@@ -144,7 +146,8 @@ class EncryptCookies
     {
         return new Cookie(
             $c->getName(), $value, $c->getExpiresTime(), $c->getPath(),
-            $c->getDomain(), $c->isSecure(), $c->isHttpOnly()
+            $c->getDomain(), $c->isSecure(), $c->isHttpOnly(), $c->isRaw(),
+            $c->getSameSite()
         );
     }
 

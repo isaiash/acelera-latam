@@ -7,21 +7,21 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace PHPUnit\Framework\Constraint;
 
-/**
- * @since Class available since Release 3.1.0
- */
-abstract class PHPUnit_Framework_Constraint_Composite extends PHPUnit_Framework_Constraint
+use PHPUnit\Framework\ExpectationFailedException;
+
+abstract class Composite extends Constraint
 {
     /**
-     * @var PHPUnit_Framework_Constraint
+     * @var Constraint
      */
     protected $innerConstraint;
 
     /**
-     * @param PHPUnit_Framework_Constraint $innerConstraint
+     * @param Constraint $innerConstraint
      */
-    public function __construct(PHPUnit_Framework_Constraint $innerConstraint)
+    public function __construct(Constraint $innerConstraint)
     {
         parent::__construct();
         $this->innerConstraint = $innerConstraint;
@@ -37,11 +37,13 @@ abstract class PHPUnit_Framework_Constraint_Composite extends PHPUnit_Framework_
      * a boolean value instead: true in case of success, false in case of a
      * failure.
      *
-     * @param  mixed                                        $other        Value or object to evaluate.
-     * @param  string                                       $description  Additional information about the test
-     * @param  bool                                         $returnResult Whether to return a result or throw an exception
+     * @param mixed  $other        Value or object to evaluate.
+     * @param string $description  Additional information about the test
+     * @param bool   $returnResult Whether to return a result or throw an exception
+     *
      * @return mixed
-     * @throws PHPUnit_Framework_ExpectationFailedException
+     *
+     * @throws ExpectationFailedException
      */
     public function evaluate($other, $description = '', $returnResult = false)
     {
@@ -51,8 +53,8 @@ abstract class PHPUnit_Framework_Constraint_Composite extends PHPUnit_Framework_
                 $description,
                 $returnResult
             );
-        } catch (PHPUnit_Framework_ExpectationFailedException $e) {
-            $this->fail($other, $description);
+        } catch (ExpectationFailedException $e) {
+            $this->fail($other, $description, $e->getComparisonFailure());
         }
     }
 
@@ -63,6 +65,6 @@ abstract class PHPUnit_Framework_Constraint_Composite extends PHPUnit_Framework_
      */
     public function count()
     {
-        return count($this->innerConstraint);
+        return \count($this->innerConstraint);
     }
 }

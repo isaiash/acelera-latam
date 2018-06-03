@@ -26,23 +26,14 @@ use Symfony\Component\CssSelector\Parser\Tokenizer\TokenizerPatterns;
  * which is copyright Ian Bicking, @see https://github.com/SimonSapin/cssselect.
  *
  * @author Jean-François Simon <jeanfrancois.simon@sensiolabs.com>
+ *
+ * @internal
  */
 class StringHandler implements HandlerInterface
 {
-    /**
-     * @var TokenizerPatterns
-     */
     private $patterns;
-
-    /**
-     * @var TokenizerEscaping
-     */
     private $escaping;
 
-    /**
-     * @param TokenizerPatterns $patterns
-     * @param TokenizerEscaping $escaping
-     */
     public function __construct(TokenizerPatterns $patterns, TokenizerEscaping $escaping)
     {
         $this->patterns = $patterns;
@@ -52,7 +43,7 @@ class StringHandler implements HandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(Reader $reader, TokenStream $stream)
+    public function handle(Reader $reader, TokenStream $stream): bool
     {
         $quote = $reader->getSubstring(1);
 

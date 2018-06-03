@@ -2,6 +2,7 @@
 
 namespace Illuminate\Database;
 
+use Illuminate\Database\Schema\SQLiteBuilder;
 use Illuminate\Database\Query\Processors\SQLiteProcessor;
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as DoctrineDriver;
 use Illuminate\Database\Query\Grammars\SQLiteGrammar as QueryGrammar;
@@ -20,6 +21,20 @@ class SQLiteConnection extends Connection
     }
 
     /**
+     * Get a schema builder instance for the connection.
+     *
+     * @return \Illuminate\Database\Schema\SQLiteBuilder
+     */
+    public function getSchemaBuilder()
+    {
+        if (is_null($this->schemaGrammar)) {
+            $this->useDefaultSchemaGrammar();
+        }
+
+        return new SQLiteBuilder($this);
+    }
+
+    /**
      * Get the default schema grammar instance.
      *
      * @return \Illuminate\Database\Schema\Grammars\SQLiteGrammar
@@ -32,7 +47,7 @@ class SQLiteConnection extends Connection
     /**
      * Get the default post processor instance.
      *
-     * @return \Illuminate\Database\Query\Processors\Processor
+     * @return \Illuminate\Database\Query\Processors\SQLiteProcessor
      */
     protected function getDefaultPostProcessor()
     {
