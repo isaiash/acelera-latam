@@ -62,6 +62,7 @@ class AuthController extends Controller
 
        
 
+<<<<<<< HEAD
         public function postLogin(Request $request)
    {
     $this->validate($request, [
@@ -82,6 +83,27 @@ class AuthController extends Controller
 
     return "contraseña o email incorrectos";
 
+=======
+    public function postLogin(Request $request){
+        $this->validate($request, [
+            'rut' => 'required',
+            'password' => 'required',
+        ]);
+
+        $credentials = $request->only('rut', 'password');
+
+        if ($this->auth->attempt($credentials, $request->has('remember'))){
+            $usuarioactual=\Auth::user();
+            if($usuarioactual->etapa == "No definida"){
+                return view('cliente.home')->with("usuario",  $usuarioactual);
+            }
+            else{
+                return view('pagina.aaa')->with("usuario",$usuarioactual);
+            }
+            
+        }
+        return "contraseña o email incorrectos";
+>>>>>>> 246777eb114a0db805402cbb9b401efda300bee2
     }
 
 
