@@ -33,11 +33,9 @@ class ListFailedCommand extends Command
      *
      * @return void
      */
-    public function fire()
+    public function handle()
     {
-        $jobs = $this->getFailedJobs();
-
-        if (count($jobs) == 0) {
+        if (count($jobs = $this->getFailedJobs()) == 0) {
             return $this->info('No failed jobs!');
         }
 
@@ -51,13 +49,11 @@ class ListFailedCommand extends Command
      */
     protected function getFailedJobs()
     {
-        $results = [];
+        $failed = $this->laravel['queue.failer']->all();
 
-        foreach ($this->laravel['queue.failer']->all() as $failed) {
-            $results[] = $this->parseFailedJob((array) $failed);
-        }
-
-        return array_filter($results);
+        return collect($failed)->map(function ($failed) {
+            return $this->parseFailedJob((array) $failed);
+        })->filter()->all();
     }
 
     /**
@@ -68,7 +64,7 @@ class ListFailedCommand extends Command
      */
     protected function parseFailedJob(array $failed)
     {
-        $row = array_values(array_except($failed, ['payload']));
+        $row = array_values(Arr::except($failed, ['payload', 'exception']));
 
         array_splice($row, 3, 0, $this->extractJobName($failed['payload']));
 
@@ -76,27 +72,37 @@ class ListFailedCommand extends Command
     }
 
     /**
-     * @param array $payload
+     * Extract the failed job name from payload.
      *
-     * @return string
+     * @param  string  $payload
+     * @return string|null
      */
     private function extractJobName($payload)
     {
         $payload = json_decode($payload, true);
 
         if ($payload && (! isset($payload['data']['command']))) {
-            return Arr::get($payload, 'job');
+            return $payload['job'] ?? null;
+        } elseif ($payload && isset($payload['data']['command'])) {
+            return $this->matchJobName($payload);
+        }
+    }
+
+    /**
+     * Match the job name from the payload.
+     *
+     * @param  array  $payload
+     * @return string
+     */
+    protected function matchJobName($payload)
+    {
+        preg_match('/"([^"]+)"/', $payload['data']['command'], $matches);
+
+        if (isset($matches[1])) {
+            return $matches[1];
         }
 
-        if ($payload && isset($payload['data']['command'])) {
-            preg_match('/"([^"]+)"/', $payload['data']['command'], $matches);
-
-            if (isset($matches[1])) {
-                return $matches[1];
-            } else {
-                return Arr::get($payload, 'job');
-            }
-        }
+        return $payload['job'] ?? null;
     }
 
     /**

@@ -32,64 +32,35 @@ class UsuariosController extends Controller {
 
 
 	//presenta el formulario para nuevo usuario
-	public function agregar_nuevo_usuario(Request $request)
-	{
-
+	public function agregar_nuevo_usuario(Request $request){
 		$data=$request->all();
       	$usuario= new User;
-		$usuario->nombres  =  $data["nombres"];
-		$usuario->apellidos=$data["apellidos"];
-		$usuario->pais=$data["pais"];
-		$usuario->ciudad=$data["ciudad"];
+		$usuario->name  =  $data["name"];
 		$usuario->email=$data["email"];
-		$usuario->institucion=$data["institucion"];
-		$usuario->ocupacion=$data["ocupacion"];
 		$usuario->password=bcrypt($data["password"]);
-
 		$resul= $usuario->save();
-
 		if($resul){
-            
             return view("mensajes.msj_correcto")->with("msj","Usuario Registrado Correctamente");   
 		}
-		else
-		{
-             
-            return view("mensajes.msj_rechazado")->with("msj","hubo un error vuelva a intentarlo");  
-
+		else{
+            return view("mensajes.msj_rechazado")->with("msj","hubo un error vuelva a intentarlo");
 		}
 	}
 
 //leccion 7
-		public function form_editar_usuario($id)
-	{
-		//funcion para cargar los datos de cada usuario en la ficha
-		$usuario=User::find($id);
-		$contador=count($usuario);
-		if($contador>0){          
+		public function form_editar_usuario($id){
+        	$usuario=User::find($id);
             return view("formularios.form_editar_usuario")->with("usuario",$usuario);   
 		}
-		else
-		{            
-            return view("mensajes.msj_rechazado")->with("msj","el usuario con ese id no existe o fue borrado");  
-		}
-	}
 
-
-
-		public function editar_usuario(Request $request)
-	{
-
+		
+		public function editar_usuario(Request $request){
 		$data=$request->all();
 		$idUsuario=$data["id_usuario"];
 		$usuario=User::find($idUsuario);
-        $usuario->nombres  =  $data["nombres"];
-		$usuario->apellidos=$data["apellidos"];
-		$usuario->pais=$data["pais"];
-		$usuario->ciudad=$data["ciudad"];
+        $usuario->name  =  $data["name"];
 		$usuario->email=$data["email"];
-		$usuario->institucion=$data["institucion"];
-		$usuario->ocupacion=$data["ocupacion"];
+		
 		
 		$resul= $usuario->save();
 
@@ -109,7 +80,7 @@ class UsuariosController extends Controller {
 	    $id=$request->input('id_usuario_foto');
 		$archivo = $request->file('archivo');
         $input  = array('image' => $archivo) ;
-        $reglas = array('image' => 'required|image|mimes:jpeg,jpg,bmp,png,gif|max:2000');
+        $reglas = array('image' => 'required|image|mimes:jpeg,jpg,bmp,png,gif|max:900');
         $validacion = Validator::make($input,  $reglas);
         if ($validacion->fails())
         {
@@ -138,13 +109,7 @@ class UsuariosController extends Controller {
 		    }
 
 
-        }
-
-
-
-	
-
-
+		}
 	}
 
 
