@@ -16,6 +16,11 @@ Route::get('/', [
 	'uses' => 'HomeController@index'
 ]);
 
+Route::get('/hello', [
+	'as' => 'nada',
+	'uses' => 'HomeController@aaa'
+]);
+
 Route::get('inicio', [
 	'as' => 'inicio',
 	'uses' => 'HomeController@index'
@@ -49,7 +54,7 @@ Route::post('clasifica', [
 ]);
 
 
-Route::post('clasificaconf', [
+/*Route::post('clasificaconf', [
 	'as' => 'clasificaconf', 
 	'uses' => 'PrimeroController@clasificaconf'
-]);
+]);*7

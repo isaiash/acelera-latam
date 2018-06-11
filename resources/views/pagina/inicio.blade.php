@@ -4,14 +4,7 @@
 
 
 <div id="contenido">
-
-<img src="imagenes/inicio.png" >
-
-
+    <img src="imagenes/inicio.png" >
 </div>	
-
-
-
-
 
 @stop
