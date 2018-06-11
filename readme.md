@@ -9,6 +9,6 @@
 
 # Acelera Latam
 ## How to use
-- Create you .env file (or copy from this repo)
+- Create you .env file
 - Execute composer update and composer install
 - run
