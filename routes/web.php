@@ -57,4 +57,4 @@ Route::post('clasifica', [
 /*Route::post('clasificaconf', [
 	'as' => 'clasificaconf', 
 	'uses' => 'PrimeroController@clasificaconf'
-]);*7
+]);*/
