@@ -73,11 +73,15 @@ class AuthController extends Controller
 
     $credentials = $request->only('rut', 'password');
 
-    if ($this->auth->attempt($credentials, $request->has('remember')))
-    {
-
+    if ($this->auth->attempt($credentials, $request->has('remember'))){
         $usuarioactual=\Auth::user();
-       return view('cliente.home')->with("usuario",  $usuarioactual);
+        if($usuarioactual->etapa == "No definida"){
+            return view('cliente.home')->with("usuario",  $usuarioactual);
+        }
+        else{
+            return view('pagina.aaa')->with("usuario",$usuarioactual);
+        }
+        
     }
 
     return "contraseña o email incorrectos";
