@@ -26,6 +26,11 @@ Route::get('inicio', [
 	'uses' => 'HomeController@index'
 ]);
 
+Route::get('/dash', [
+	'as' => 'nada',
+	'uses' => 'DashController@index'
+]);
+
 
 //pantalla usuario
 //loggin
@@ -34,7 +39,7 @@ Route::post('login', ['as' =>'login', 'uses' => 'Auth\AuthController@postLogin']
 Route::get('logout', ['as' => 'logout', 'uses' => 'Auth\AuthController@getLogout']);
 
 
- 
+
 // Registration routes...
 Route::get('register', [
 	'as' => 'register',
@@ -42,19 +47,19 @@ Route::get('register', [
 ]);
 
 Route::post('register', [
-	'as' => 'auth/register', 
+	'as' => 'auth/register',
 	'uses' => 'Auth\AuthController@postRegister'
 ]);
 
 // Clasificacion de etapa
 
 Route::post('clasifica', [
-	'as' => 'clasifica', 
+	'as' => 'clasifica',
 	'uses' => 'PrimeroController@clasifica'
 ]);
 
 
 /*Route::post('clasificaconf', [
-	'as' => 'clasificaconf', 
+	'as' => 'clasificaconf',
 	'uses' => 'PrimeroController@clasificaconf'
 ]);*/
