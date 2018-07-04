@@ -16,6 +16,7 @@
     <div id="pregunta1">
     <h2>¿Tiene producto mínimo viable?</h2>
         <label>
+
             <input type="radio" name="mpv" value="si" onclick="show1()"> Si<br>
         </label>
         <label>
@@ -34,7 +35,7 @@
     </div>
 
     <script>function show1(){
-        document.getElementById("pregunta2").style.display ='block';
+        document.getElementById("pregunta2").style.display ='block';        
       }
     </script>
     <script>function show2(){

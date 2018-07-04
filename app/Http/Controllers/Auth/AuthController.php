@@ -72,10 +72,9 @@ class AuthController extends Controller
 
     $credentials = $request->only('rut', 'password');
 
-    if ($this->auth->attempt($credentials, $request->has('remember')))
-    {
-
+    if ($this->auth->attempt($credentials, $request->has('remember'))){
         $usuarioactual=\Auth::user();
+
 
         if( $usuarioactual->etapa == 'No definida'){
 
@@ -93,6 +92,15 @@ class AuthController extends Controller
 
       }
 
+
+
+        if($usuarioactual->etapa == "No definida"){
+            return view('cliente.home')->with("usuario",  $usuarioactual);
+        }
+        else{
+            return view('dashboard.index')->with("usuario",  $usuarioactual);
+        }
+        
 
     }
 
@@ -137,9 +145,13 @@ $this->validate($request, [
 
     if($usuario->save()){
 
+
     return view('cliente.aviso')->with("msj","Registrado correctamente");
 
    
+
+         return view('cliente.exito');
+
                
     }
 

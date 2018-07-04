@@ -25,11 +25,10 @@ class PrimeroController extends Controller{
 		$cantidadventas = $data["cantidadventas"];
 		$usuario=User::find($idUsuario);
 
-		if(isset($mpv) and $mpv == 'no'){
-		if(isset($ventas) and $ventas == 'si'){		
-				return "Opción invalida";
-			}
+		if(isset($mpv) and $mpv == 'no' and isset($ventas) and $ventas == 'si'){	
+			return "Opción invalida";
 		}
+
 
 		if(isset($mpv) and $mpv == 'no'){
 		if(isset($ventas) and $ventas == 'no'){		
@@ -60,6 +59,7 @@ class PrimeroController extends Controller{
 				if(isset($cantidadventas) and $cantidadventas == 'op4'){		
 					$usuario->etapa = 'Optimización/Declive';
 				}
+
 			}
 		}
 		$resul= $usuario->save();
