@@ -34,12 +34,7 @@
     </div>
 
     <script>function show1(){
-        document.getElementById("pregunta2").style.display ='block';
-        var x = document.getElementById("mpv1").checked;
-        if(x == true){
-            alert(document.getElementById("mpv1").value);
-        }
-        
+        document.getElementById("pregunta2").style.display ='block';        
       }
     </script>
     <script>function show2(){

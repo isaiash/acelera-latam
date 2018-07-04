@@ -18,13 +18,9 @@ class PrimeroController extends Controller{
 	public function clasifica(Request $request){
  		$data=$request->all();
 		$idUsuario=$data["id_usuario"];
-		echo("<h2>IdUsuario = ".$idUsuario."</h2>");
 		$mpv = $data["mpv"];
-		echo("<h2>MPV = ".$mpv."</h2>");
 		$ventas = $data["ventas"];
-		echo("<h2>Ventas = ".$ventas."</h2>");
 		$cantidadventas = $data["cantidadventas"];
-		echo("<h2>Cantidad = ".$cantidadventas."</h2>");
 		$usuario=User::find($idUsuario);
 
 		if(isset($mpv) and $mpv == 'no' and isset($ventas) and $ventas == 'si'){	

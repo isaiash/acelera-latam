@@ -79,7 +79,7 @@ class AuthController extends Controller
             return view('cliente.home')->with("usuario",  $usuarioactual);
         }
         else{
-            return view('pagina.aaa')->with("usuario",$usuarioactual);
+            return view('dashboard.index')->with("usuario",$usuarioactual);
         }
         
     }
@@ -125,7 +125,7 @@ $this->validate($request, [
 
     if($usuario->save()){
 
-         return "cliente registrado correctamente";
+         return view('cliente.exito');
                
     }
 
