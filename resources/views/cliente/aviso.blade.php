@@ -6,16 +6,10 @@
 <div id="contenido">
 
 
-<h1>Usted está en etapa:  <?= $usuario->etapa; ?></h1>
+<h1> <?php  echo $msj; ?> </h1>
 
 
 <br>
-<br>
-
-<br>
-
-<a  href="{{ route('continue') }}" class="btn btn-danger" style="color: #fff">​Continuar</a>
-
 <br>
 <br>
 

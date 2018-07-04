@@ -15,6 +15,8 @@ class PrimeroController extends Controller{
 		$this->middleware('auth');
 	}
 
+	
+
 	public function clasifica(Request $request){
  		$data=$request->all();
 		$idUsuario=$data["id_usuario"];
@@ -29,33 +31,33 @@ class PrimeroController extends Controller{
 			}
 		}
 
-		else if(isset($mpv) and $mpv == 'no'){
+		if(isset($mpv) and $mpv == 'no'){
 		if(isset($ventas) and $ventas == 'no'){		
 				$usuario->etapa = 'Idea';
 			}
 		}
 
-		else if(isset($mpv) and $mpv == 'si'){
+		if(isset($mpv) and $mpv == 'si'){
 		if(isset($ventas) and $ventas == 'no'){	
 				$usuario->etapa = 'Semilla';
 			}			
 		}
 		
-		else if(isset($mpv) and $mpv == 'si'){
+		   if(isset($mpv) and $mpv == 'si'){
 			if(isset($ventas) and $ventas == 'si'){
 				if(isset($cantidadventas) and $cantidadventas == 'op1'){		
 					$usuario->etapa = 'Temprana';
 				}
 	
-				else if(isset($cantidadventas) and $cantidadventas == 'op2'){		
+				if(isset($cantidadventas) and $cantidadventas == 'op2'){		
 					$usuario->etapa = 'Expansión';
 				}
 	
-				else if(isset($cantidadventas) and $cantidadventas == 'op3'){		
+				if(isset($cantidadventas) and $cantidadventas == 'op3'){		
 					$usuario->etapa = 'Internacionalización';
 				}
 	
-				else if(isset($cantidadventas) and $cantidadventas == 'op4'){		
+				if(isset($cantidadventas) and $cantidadventas == 'op4'){		
 					$usuario->etapa = 'Optimización/Declive';
 				}
 			}
@@ -66,7 +68,14 @@ class PrimeroController extends Controller{
            return view('cliente.etapa')->with("usuario",  $usuario); 
 		}
 		else{            
-            return "ERROR!!"; 
+            return view('cliente.aviso')->with("msj","Hubo un error vuelva a intentarlo"); 
 		}
 	}	
+
+
+
+
+
+
+
 }

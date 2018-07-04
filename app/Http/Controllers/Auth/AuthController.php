@@ -61,8 +61,7 @@ class AuthController extends Controller
 
 
        
-
-        public function postLogin(Request $request)
+ public function postLogin(Request $request)
    {
     $this->validate($request, [
         'rut' => 'required',
@@ -77,10 +76,27 @@ class AuthController extends Controller
     {
 
         $usuarioactual=\Auth::user();
-       return view('cliente.home')->with("usuario",  $usuarioactual);
+
+        if( $usuarioactual->etapa == 'No definida'){
+
+             return view('cliente.home')->with("usuario",  $usuarioactual);
+        }
+
+      if( $usuarioactual->etapa == 'Idea'){
+
+             return view('cliente.preguntasq.idea')->with("usuario",  $usuarioactual);
+        }
+
+      else{
+        return view('cliente.aviso')->with("msj","Falta agregar dimensiones"); 
+
+
+      }
+
+
     }
 
-    return "contraseña o email incorrectos";
+    return view('cliente.aviso')->with("msj","Rut o email incorrectos"); 
 
     }
 
@@ -108,7 +124,7 @@ $this->validate($request, [
     ]);
 
 
-  $data=$request->all();
+        $data=$request->all();
         $usuario= new User;
         $usuario->rut  = $data["rut"];
         $usuario->name  = $data["name"];
@@ -121,7 +137,9 @@ $this->validate($request, [
 
     if($usuario->save()){
 
-         return "cliente registrado correctamente";
+    return view('cliente.aviso')->with("msj","Registrado correctamente");
+
+   
                
     }
 
@@ -140,6 +158,11 @@ protected function getLogout()
         return redirect('inicio');
     }
 
+
+
+
+
+/*********************************************************/
 
 
 

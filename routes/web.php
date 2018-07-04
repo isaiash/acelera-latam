@@ -54,6 +54,17 @@ Route::post('clasifica', [
 ]);
 
 
+Route::post('q1', [
+	'as' => 'q1', 
+	'uses' => 'SegundoController@q1'
+]);
+
+
+Route::get('continue', [
+	'as' => 'continue', 
+	'uses' => 'SegundoController@continue'
+]);
+
 /*Route::post('clasificaconf', [
 	'as' => 'clasificaconf', 
 	'uses' => 'PrimeroController@clasificaconf'

@@ -16,20 +16,20 @@
     <div id="pregunta1">
     <h2>¿Tiene producto mínimo viable?</h2>
         <label>
-            <input type="radio" name="mpv" value="si" onclick=show1()> Si<br>
+            <input type="radio" name="mpv" value="si" onclick="show1()"> Si<br>
         </label>
         <label>
-            <input type="radio" name="mpv" value="no" onclick=show1()> No<br>
+            <input type="radio" name="mpv" value="no" onclick="show1()"> No<br>
         </label>
     </div>
 
     <div style="display:none;" id="pregunta2">
     <h2>¿Usted posee ventas?</h2>
             <label>
-                <input type="radio" name="ventas" value="si" onclick=show2()> Si<br>
+                <input type="radio" name="ventas" value="si" onclick="show2()"> Si<br>
             </label>
             <label>
-                <input type="radio" name="ventas" value="no" onclick=show3()> No<br>
+                <input type="radio" name="ventas" value="no" onclick="show3()"> No<br>
             </label>
     </div>
 
@@ -57,9 +57,14 @@
             </select>
         <br>
     </div>
+
+
+    <br>
+    <br>
     <button type="submit" class="btn btn-danger">Enviar</button>
 
     </form>
+
 
 <br>
 
