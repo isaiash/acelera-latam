@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->integer('numero_telefono');
             $table->string('email');
             $table->string('password', 60);
+            $table->enum('type', ['user', 'admin']);
             $table->string('etapa')->nullable()->default('No definida');
             $table->rememberToken();
             $table->timestamps();

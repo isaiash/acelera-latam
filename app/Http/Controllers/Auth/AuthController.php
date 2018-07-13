@@ -76,6 +76,7 @@ class AuthController extends Controller
         $usuarioactual=\Auth::user();
 
 
+if( $usuarioactual->type == 'user'){
         if( $usuarioactual->etapa == 'No definida'){
 
              return view('cliente.home')->with("usuario",  $usuarioactual);
@@ -88,19 +89,15 @@ class AuthController extends Controller
 
       else{
         return view('cliente.aviso')->with("msj","Falta agregar dimensiones"); 
-
-
       }
 
+    }
 
+    else{ 
+      return view('cliente.aviso')->with("msj","Pantalla admin");
 
-        if($usuarioactual->etapa == "No definida"){
-            return view('cliente.home')->with("usuario",  $usuarioactual);
-        }
-        else{
-            return view('dashboard.index')->with("usuario",  $usuarioactual);
-        }
-        
+    }
+
 
     }
 

@@ -1,4 +1,4 @@
-@extends('cliente.estructura')
+@extends('cliente.estrucaviso')
 
 @section('content')
 
@@ -17,6 +17,15 @@
         
 
 </div>	
+
+ <br>
+    <br>
+     <br>
+    <br>
+     <br>
+    <br>
+     <br>
+    <br>
 
 
 @stop

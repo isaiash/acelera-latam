@@ -1,4 +1,4 @@
-@extends('cliente.estructura')
+@extends('pagina.estructura')
 
 @section('content')
 
@@ -14,13 +14,19 @@
 
 <br>
 
-<a  href="{{ route('continue') }}" class="btn btn-danger" style="color: #fff">​Continuar</a>
 
-<br>
 <br>
 
 <a href="logout" class="btn btn-danger" style="color: #fff">​Salir</a>
-        
+    <br>
+    <br>
+     <br>
+    <br>
+     <br>
+    <br>
+     <br>
+    <br>
+    
 
 </div>	
 

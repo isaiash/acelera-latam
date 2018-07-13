@@ -31,6 +31,12 @@ Route::get('/dash', [
 	'uses' => 'DashController@index'
 ]);
 
+Route::get('/prueba', [
+	'as' => 'prueba',
+	'uses' => 'HomeController@prueba'
+]);
+
+
 
 //pantalla usuario
 //loggin
@@ -62,6 +68,26 @@ Route::post('clasifica', [
 Route::post('q1', [
 	'as' => 'q1', 
 	'uses' => 'SegundoController@q1'
+]);
+
+Route::post('q2', [
+	'as' => 'q2', 
+	'uses' => 'SegundoController@q2'
+]);
+
+Route::post('q3', [
+	'as' => 'q3', 
+	'uses' => 'SegundoController@q3'
+]);
+
+Route::post('q4', [
+	'as' => 'q4', 
+	'uses' => 'SegundoController@q4'
+]);
+
+Route::post('q5', [
+	'as' => 'q5', 
+	'uses' => 'SegundoController@q5'
 ]);
 
 

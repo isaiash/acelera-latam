@@ -74,8 +74,13 @@ class PrimeroController extends Controller{
 
 
 
-
+		
+		
 
 
 
 }
+
+
+
+		

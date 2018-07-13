@@ -36,4 +36,11 @@ class HomeController extends Controller {
 		return view('pagina.inicio');
 	}
 
+			public function prueba()
+	{
+
+		return view('pagina.prueba');
+	}
+
+
 }

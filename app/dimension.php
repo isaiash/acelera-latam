@@ -14,6 +14,11 @@ class dimension extends Model
         return $this->hasMany('App\pregunta');
     }
 
+         public function etapas()
+    {
+        return $this->belongsToMany('App\etapa');
+    }
+
 
 
 

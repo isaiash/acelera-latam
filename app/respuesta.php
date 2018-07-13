@@ -16,7 +16,6 @@ class respuesta extends Model
     }
 
 
-
        public function preguntas()
     {
         return $this->hasOne('App\pregunta','pregunta_id', 'id');
